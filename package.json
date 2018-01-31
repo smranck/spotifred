@@ -14,7 +14,12 @@
     "spotifred"
   ],
   "author": "spotifred-team",
-  "license": "ISC",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "pg": "^7.4.1"
+  },
   "bugs": {
     "url": "https://github.com/spotifred/spotifred/issues"
   },
