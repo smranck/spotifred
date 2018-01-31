@@ -1,0 +1,22 @@
+{
+  "name": "spotifred",
+  "version": "1.0.0",
+  "description": "Spotifred services unite!",
+  "main": "client/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spotifred/spotifred.git"
+  },
+  "keywords": [
+    "spotifred"
+  ],
+  "author": "spotifred-team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spotifred/spotifred/issues"
+  },
+  "homepage": "https://github.com/spotifred/spotifred#readme"
+}
