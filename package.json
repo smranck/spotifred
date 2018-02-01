@@ -4,19 +4,21 @@
   "description": "Spotifred services unite!",
   "main": "client/index.js",
   "scripts": {
+    "start": "node server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/spotifred/spotifred.git"
   },
-  "keywords": [
-    "spotifred"
-  ],
+  "keywords": ["spotifred"],
   "author": "spotifred-team",
   "license": "MIT",
   "dependencies": {
     "fs": "0.0.1-security",
+    "koa": "^2.4.1",
+    "koa-body": "^2.5.0",
+    "koa-router": "^7.4.0",
     "path": "^0.12.7",
     "pg": "^7.4.1"
   },
