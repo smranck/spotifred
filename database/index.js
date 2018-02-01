@@ -2,14 +2,13 @@ const { Client } = require('pg');
 const path = require('path');
 const fs = require('fs');
 
-console.log('In Index.js');
 const client = new Client({
   connectionString: 'psql://home:@localhost/capstone',
 });
 
 client
   .connect()
-  .then()
+  .then(() => console.log('Connected to database'))
   .catch((err) =>
     console.error('error connecting to postgres db, ', err.stack),
   );
@@ -20,7 +19,7 @@ client
 // });
 const initializeDB = () => {
   // initialize tables by reading schema files and running as query
-  console.log('initializeDB');
+  // if more tables needed, can add schema in this array
   const schemas = ['/schema/songs.sql'];
   return Promise.all(
     schemas.map((schema) =>
@@ -51,19 +50,19 @@ const getManyDetails = (songArray) => {
 };
 
 // should be in artists
-const addSong = () => {};
+const addSong = (songDetails) => {};
 
 // should be in artists
-const removeSong = () => {};
+const removeSong = (songID) => {};
 
 // should be in update
-const updatePlayCount = () => {};
+const updatePlayCount = (songID, additionalPlays) => {};
 
 // should be in update
-const updatePopularity = () => {};
+const updatePopularity = (songID, currentPopularity) => {};
 
 // should be in update
-const updateSearchCount = () => {};
+const updateSearchCount = (songID, additionalSearches) => {};
 
 // create DB if not created yet
 // if (process.env.INITIALIZEDB) {
@@ -72,4 +71,9 @@ const updateSearchCount = () => {};
 //     .catch(err => console.error('error creating database tables, ', err.stack));
 // }
 
-module.exports = {};
+module.exports = {
+  getSongDetails,
+  getManyDetails,
+  addSong,
+  removeSong,
+};
