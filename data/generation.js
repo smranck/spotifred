@@ -54,9 +54,3 @@ csvWriter
   .then(() => {
     console.log('...Done');
   });
-
-// This will produce a file path/to/file.csv with following contents:
-//
-//   NAME,LANGUAGE
-//   Bob,"French, English"
-//   Mary,English
