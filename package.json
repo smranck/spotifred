@@ -17,6 +17,8 @@
   "author": "spotifred-team",
   "license": "MIT",
   "dependencies": {
+    "Faker": "^0.7.2",
+    "csv-writer": "0.0.3",
     "fs": "0.0.1-security",
     "koa": "^2.4.1",
     "koa-body": "^2.5.0",
