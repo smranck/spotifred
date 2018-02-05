@@ -3,11 +3,9 @@ const faker = require('Faker');
 
 const genres = ['Jazz', 'Pop', 'Rock', 'Country', 'Classical'];
 
-const idCount = { count: 0 };
-
-const makeFakeSong = () => {
+const makeFakeSong = (songId) => {
   let fakeSong = {
-    id: idCount.count,
+    id: songId,
     title: faker.Lorem.words().join(' '),
     length: 30 + Math.floor(Math.random() * 270),
     artist: `${faker.Name.firstName()} ${faker.Name.lastName()}`,
@@ -18,9 +16,8 @@ const makeFakeSong = () => {
     art: faker.Image.imageUrl(),
     bpm: Math.floor(50 + Math.random() * 125),
     popularity: 0,
+    playcount: 0,
   };
-  console.log(fakeSong);
-  idCount.count += 1;
   return fakeSong;
 };
 

@@ -11,13 +11,12 @@
     "type": "git",
     "url": "git+https://github.com/spotifred/spotifred.git"
   },
-  "keywords": [
-    "spotifred"
-  ],
+  "keywords": ["spotifred"],
   "author": "spotifred-team",
   "license": "MIT",
   "dependencies": {
     "Faker": "^0.7.2",
+    "concat-files": "^0.1.1",
     "csv-writer": "0.0.3",
     "fs": "0.0.1-security",
     "koa": "^2.4.1",

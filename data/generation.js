@@ -1,56 +1,72 @@
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const create = require('./creation.js');
-// const db = require('../database/index.js');
+const create = require('../data/creation.js');
+const path = require('path');
+const db = require('../database/index');
+const concat = require('concat-files');
 
-const csvWriter = createCsvWriter({
-  path: './data2.csv',
-  header: [
-    { id: 'id', title: 'id' },
-    { id: 'title', title: 'title' },
-    { id: 'length', title: 'length' },
-    { id: 'artist', title: 'artist' },
-    { id: 'genre', title: 'genre' },
-    { id: 'file', title: 'file' },
-    { id: 'album', title: 'album' },
-    { id: 'track', title: 'track' },
-    { id: 'art', title: 'art' },
-    { id: 'bpm', title: 'bpm' },
-    { id: 'popularity', title: 'popularity' },
-  ],
-});
+const destinationFile = path.join(__dirname, '/merged.csv');
 
-const records = [];
+console.time('Total Time of Generation and Insertion');
+// number is number of rows per file
+async function fakeSongsGenerator(number) {
+  const arrayOfCsvFiles = [];
+  console.time('fakeSongsGenerator');
+  const numberOfFiles = 100;
+  for (let i = 0; i < numberOfFiles; i += 1) {
+    let fileName = 'data' + i;
+    let id = i * number + 1;
+    const csvWriter = createCsvWriter({
+      path: path.join(__dirname, `/${fileName}.csv`),
+      header: [
+        'id',
+        'title',
+        'length',
+        'artist',
+        'genre',
+        'file',
+        'album',
+        'track',
+        'art',
+        'bpm',
+        'popularity',
+        'playcount',
+      ],
+    });
 
-for (let i = 0; i < 10; i += 1) {
-  records.push(create.makeFakeSong());
+    let records = [];
+
+    for (let j = 0; j < number; j += 1) {
+      let song = create.makeFakeSong(id);
+      records[j] = song;
+      id += 1;
+    }
+
+    await csvWriter.writeRecords(records).then(() => {
+      console.log('More songs added');
+    });
+
+    // concat takes in a callback, TODO put in the try instead of awaits
+    arrayOfCsvFiles.push(path.join(__dirname, `/${fileName}.csv`));
+    if (arrayOfCsvFiles.length === numberOfFiles) {
+      await concat(arrayOfCsvFiles, destinationFile);
+    }
+  }
+  console.timeEnd('fakeSongsGenerator');
+  return destinationFile;
 }
 
-// const adding = (array) => {
-//   console.time('************************************************************');
-//   const promises = Promise.all(
-//     array.map((songItem) => {
-//       return new Promise(async (resolve, reject) => {
-//         try {
-//           console.log(songItem);
-//           return await db.addSong(songItem);
-//         } catch (err) {
-//           console.error(err);
-//           return reject(err);
-//         }
-//       });
-//     }),
-//   );
-//   console.timeEnd(
-//     '************************************************************',
-//   );
-//   return promises;
-// };
-
-// adding(records);
-
-// writes to csv
-csvWriter
-  .writeRecords(records) // returns a promise
-  .then(() => {
-    console.log('...Done');
-  });
+// fakeSongsGenerator takes in number of rows per file
+try {
+  fakeSongsGenerator(100000)
+    .then((filePath) => {
+      setTimeout(async () => {
+        await db.copyToTable(filePath);
+        console.timeEnd('Total Time of Generation and Insertion');
+      }, 10000);
+    })
+    .then(() => {
+      console.log('Data generated');
+    });
+} catch (err) {
+  console.error('ERROR:', err);
+}

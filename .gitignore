@@ -45,3 +45,6 @@ package-lock.json
 # Generated Data
 *.csv
 !tenMil.csv
+
+# funky data generation
+data/testGen.js
