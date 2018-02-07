@@ -44,7 +44,12 @@ package-lock.json
 
 # Generated Data
 *.csv
-!tenMil.csv
 
 # funky data generation
 data/testGen.js
+
+# sqs credentials
+config.json
+
+# amazon credentials
+capstone.pem
