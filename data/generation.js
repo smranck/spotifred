@@ -3,8 +3,9 @@ const create = require('../data/creation.js');
 const path = require('path');
 const db = require('../database/index');
 const concat = require('concat-files');
+const fs = require('fs');
 
-const destinationFile = path.join(__dirname, '/merged.csv');
+const destinationFile = path.join(__dirname, '/mergedFiles.csv');
 
 console.time('Total Time of Generation and Insertion');
 // number is number of rows per file
@@ -13,7 +14,7 @@ async function fakeSongsGenerator(number) {
   console.time('fakeSongsGenerator');
   const numberOfFiles = 100;
   for (let i = 0; i < numberOfFiles; i += 1) {
-    let fileName = 'data' + i;
+    let fileName = `data${i}`;
     let id = i * number + 1;
     const csvWriter = createCsvWriter({
       path: path.join(__dirname, `/${fileName}.csv`),
@@ -46,7 +47,9 @@ async function fakeSongsGenerator(number) {
     });
 
     // concat takes in a callback, TODO put in the try instead of awaits
-    arrayOfCsvFiles.push(path.join(__dirname, `/${fileName}.csv`));
+    // arrayOfCsvFiles.push(path.join(__dirname, `/${fileName}.csv`));
+    arrayOfCsvFiles[i] = path.join(__dirname, `/${fileName}.csv`);
+
     if (arrayOfCsvFiles.length === numberOfFiles) {
       await concat(arrayOfCsvFiles, destinationFile);
     }
