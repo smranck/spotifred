@@ -1,3 +1,4 @@
+require('newrelic');
 const Koa = require('koa');
 const Router = require('koa-router');
 const Parser = require('koa-body');
