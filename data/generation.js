@@ -15,11 +15,9 @@ async function fakeSongsGenerator(number) {
   const numberOfFiles = 100;
   for (let i = 0; i < numberOfFiles; i += 1) {
     let fileName = `data${i}`;
-    let id = i * number + 1;
     const csvWriter = createCsvWriter({
       path: path.join(__dirname, `/${fileName}.csv`),
       header: [
-        'id',
         'title',
         'length',
         'artist',
@@ -37,9 +35,8 @@ async function fakeSongsGenerator(number) {
     let records = [];
 
     for (let j = 0; j < number; j += 1) {
-      let song = create.makeFakeSong(id);
+      let song = create.makeFakeSong();
       records[j] = song;
-      id += 1;
     }
 
     await csvWriter.writeRecords(records).then(() => {

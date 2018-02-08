@@ -3,9 +3,8 @@ const faker = require('Faker');
 
 const genres = ['Jazz', 'Pop', 'Rock', 'Country', 'Classical'];
 
-const makeFakeSong = (songId) => {
+const makeFakeSong = () => {
   let fakeSong = {
-    id: songId,
     title: faker.Lorem.words().join(' '),
     length: 30 + Math.floor(Math.random() * 270),
     artist: `${faker.Name.firstName()} ${faker.Name.lastName()}`,
