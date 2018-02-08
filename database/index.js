@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 
 const client = new Client({
-  connectionString: 'psql://home:@localhost/capstone',
+  connectionString:
+    process.env.DATABASE_URL || 'psql://home:@localhost/capstone',
 });
 
 client
@@ -24,10 +25,6 @@ client.queryAsync = function queryAsync(...args) {
   });
 };
 
-// const client = new Client({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: true,
-// });
 const initializeDB = () => {
   // initialize tables by reading schema files and running as query
   // if more tables needed, can add schema in this array
@@ -45,14 +42,19 @@ const initializeDB = () => {
   );
 };
 
-// gonna have to do more than console log eventually
-// gonna want to async await I would think
-// should be in songs
-const getSongDetails = (songID) => {
-  client
-    .query('SELECT * FROM songs where id = ($1)', [songID])
-    .then((data) => console.log(data.rows[0]));
+const getSongDetails = async (songID) => {
+  try {
+    let data = await client.query('SELECT * FROM songs where id = ($1)', [
+      songID,
+    ]);
+    // console.log(data.rows[0]);
+    return data.rows[0];
+  } catch (err) {
+    (err) => console.error(err);
+    return err;
+  }
 };
+// getSongDetails(1);
 
 // function to create query for requests for multiple songs
 const createParamString = (arrayOfSongIDs) => {
@@ -64,28 +66,30 @@ const createParamString = (arrayOfSongIDs) => {
   return arrayOfParams.join(' or ');
 };
 
-// console.log(createParamString([1, 2, 3]));
-
 // should be in songs
-const getManyDetails = (arrayOfSongIDs) => {
-  let query = `SELECT * FROM songs where (${createParamString(
-    arrayOfSongIDs,
-  )})`;
-  // this will return an array of objects. Should narrows them down into what is wanted
-  client
-    .queryAsync(query, [...arrayOfSongIDs])
-    .then((data) => console.log(data.rows));
+const getManyDetails = async (arrayOfSongIDs) => {
+  try {
+    let query = `SELECT * FROM songs where (${createParamString(
+      arrayOfSongIDs,
+    )})`;
+    // this will return an array of objects. Should narrows them down into what is wanted
+    let data = await client.query(query, [...arrayOfSongIDs]);
+    // console.log(data.rows);
+    return data.rows;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
 };
 
-// getManyDetails([1, 2]);
+// getManyDetails([1, 2, 3]);
 
 // should be in artists
-// add a .catch
-const addSong = (songDetails) => {
-  let query =
-    'INSERT INTO songs (title, length, artist, genre, file, playcount, album, track, art, bpm) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
-  client
-    .queryAsync(query, [
+const addSong = async (songDetails) => {
+  try {
+    let query =
+      'INSERT INTO songs (title, length, artist, genre, file, playcount, album, track, art, bpm) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
+    let data = await client.queryAsync(query, [
       songDetails.title,
       songDetails.length,
       songDetails.artist,
@@ -96,15 +100,39 @@ const addSong = (songDetails) => {
       songDetails.track,
       songDetails.art,
       songDetails.bpm,
-    ])
-    .then((data) => console.log(data.rows[0]))
-    .catch((err) => console.error(err));
+    ]);
+    // console.log(data);
+    return data.rows[0];
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
 };
 
+// addSong({
+//   title: 'asdf',
+//   length: 12,
+//   artist: 'asdf',
+//   genre: 'asdf',
+//   file: 'asdf',
+//   playcount: 0,
+//   album: 'asdf',
+//   track: 12,
+//   art: 'asdf',
+//   bpm: 20,
+// });
+
 // should be in artists
-const removeSong = (songID) => {
-  let query = `DELETE FROM songs WHERE id = ${songID}`;
-  client.queryAsync(query).then(() => console.log('Deleted'));
+const removeSong = async (songID) => {
+  try {
+    let query = `DELETE FROM songs WHERE id = ${songID}`;
+    let data = client.query(query);
+    console.log('Deleted');
+    return data;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
 };
 
 // should be in update
@@ -126,7 +154,7 @@ const updatePlaycount = (songID, additionalPlays) => {
     .catch((err) => console.error(err));
 };
 
-// getPlaycount(1, 1);
+// updatePlaycount(1, 1);
 
 // should be in update
 // got to figure out what this actually looks like with dave
@@ -164,20 +192,3 @@ module.exports = {
   copyToTable,
   updatePlaycount,
 };
-
-// addSong({
-//   title: 'asdf',
-//   length: 12,
-//   artist: 'asdf',
-//   genre: 'asdf',
-//   file: 'asdf',
-//   playcount: 0,
-//   album: 'asdf',
-//   track: 12,
-//   art: 'asdf',
-//   bpm: 20,
-// });
-
-// getSongDetails(1234567);
-// getPlayCount(1234567);
-// getManyDetails([1234567]);
