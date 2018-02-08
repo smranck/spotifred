@@ -168,7 +168,7 @@ const updatePopularity = async (songID, currentPopularity) => {
 };
 
 const copyToTable = (fromFile) => {
-  let query = `copy songs from '${fromFile}' DELIMITERS ',' CSV;`;
+  let query = `copy songs (title, length, artist, genre, file, album, track, art, bpm, popularity, playcount) from '${fromFile}' DELIMITERS ',' CSV;`;
   client
     .queryAsync(query)
     .then(() => console.log('Copied'))
